@@ -8,7 +8,7 @@
 
 import * as React from "react"
 import { cards, formatCardName, getCardById } from "@/lib/tarot-data"
-import { Card as TarotCard, Orientation } from "@/lib/types"
+import { TarotCard, Orientation } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { expandQueryTokens, matchesCard } from "@/lib/card-search"
 import { Button } from "@/components/ui/button"

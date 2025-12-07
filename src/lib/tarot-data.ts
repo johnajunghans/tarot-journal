@@ -5,7 +5,7 @@
  * keywords, and image URLs. Also provides helper functions for
  * card lookups and name formatting.
  */
-import { Card, Suit } from './types';
+import { TarotCard, Suit } from './types';
 
 // === Constants ===
 
@@ -65,7 +65,7 @@ const getMeanings = (name: string, upright: boolean) => {
 
 // === Card Deck Generation ===
 
-export const cards: Card[] = [];
+export const cards: TarotCard[] = [];
 
 // Generate Major Arcana
 majorArcanaNames.forEach((name, index) => {
@@ -109,7 +109,7 @@ suits.forEach(suit => {
 // === Demo Data Overrides ===
 
 /** Specific meaning overrides for better demo experience */
-const demoUpdates: Partial<Card>[] = [
+const demoUpdates: Partial<TarotCard>[] = [
     { id: 'major-0', uprightMeaning: "New beginnings, innocence, spontaneity.", reversedMeaning: "Recklessness, risk-taking." },
     { id: 'major-13', uprightMeaning: "Endings, change, transformation, transition.", reversedMeaning: "Resistance to change, personal transformation." },
     // Add more as needed
@@ -144,7 +144,7 @@ const numberWords: Record<number, string> = {
  * @param id - The card ID (e.g., "major-0" or "minor-cups-1")
  * @returns The card if found, undefined otherwise
  */
-export function getCardById(id: string): Card | undefined {
+export function getCardById(id: string): TarotCard | undefined {
     return cards.find(c => c.id === id);
 }
 
@@ -155,7 +155,7 @@ export function getCardById(id: string): Card | undefined {
  * @param card - The card to format
  * @returns The formatted card name
  */
-export function formatCardName(card: Card): string {
+export function formatCardName(card: TarotCard): string {
     if (card.arcana === 'minor' && card.suit && card.number && card.number >= 2 && card.number <= 10) {
         const word = numberWords[card.number] ?? card.number.toString();
         const suitName = suitNames[card.suit] ?? card.suit;

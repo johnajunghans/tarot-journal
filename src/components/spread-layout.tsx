@@ -7,7 +7,8 @@
  */
 "use client"
 
-import { ReadingType, ReadingCard } from "@/lib/types"
+import { ReadingCard } from "@/lib/types"
+import { ReadingType } from "@/lib/spread-config"
 import { SPREAD_POSITIONS } from "@/lib/spread-config"
 import { TarotCardDisplay } from "./tarot-card-display"
 import { cn } from "@/lib/utils"

@@ -87,13 +87,23 @@ Please provide your interpretation.
 
     const handleSave = () => {
         if (!result) return;
+        const now = new Date().toISOString();
         const interp: Interpretation = {
             id: crypto.randomUUID(),
-            date: new Date().toISOString(),
+            readingId: reading.id,
+            createdAt: now,
+            source: 'ai',
+            content: result,
+            metadata: {
+                model: 'amazon/nova-2-lite-v1:free',
+                tier: 'free',
+            },
+            // Legacy compatibility fields
+            date: now,
             question: reading.question,
             context: reading.context,
             aiResponse: result,
-            model: 'claude-3-sonnet' // or whatever
+            model: 'amazon/nova-2-lite-v1:free',
         };
         onSave(interp);
         setOpen(false);

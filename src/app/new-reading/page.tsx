@@ -17,7 +17,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ReadingType, ReadingCard, Card as TarotCard, Orientation } from "@/lib/types"
+import { ReadingCard, TarotCard, Orientation } from "@/lib/types"
+import { ReadingType } from "@/lib/spread-config"
 import { SPREADS, getPositionLabel, getPositionDescription } from "@/lib/spread-config"
 import { saveReading } from "@/lib/storage"
 import { ArrowLeft, CheckCircle2, Calendar as CalendarIcon } from "lucide-react"
@@ -66,6 +67,7 @@ export default function NewReadingPage() {
         setCards(prev => {
             const filtered = prev.filter(c => c.position !== position && c.cardId !== cardInfo.id);
             const nextCard: ReadingCard = {
+                positionId: `${currentSpread.type}-${position}`, // Generate positionId
                 position,
                 cardId: cardInfo.id,
                 cardName: cardInfo.name,
@@ -81,17 +83,29 @@ export default function NewReadingPage() {
     const handleFinish = () => {
         if (!selectedType || filledSlots !== totalSlots || !question) return;
         const readingId = crypto.randomUUID();
+        const now = new Date().toISOString();
         // Format as YYYY-MM-DD using local time to avoid timezone shifts
         const formattedDate = format(date, 'yyyy-MM-dd');
         
+        const spreadName = currentSpread?.name || selectedType.replace('-', ' ');
+        
         saveReading({
             id: readingId,
-            date: formattedDate,
+            userId: 'local-user',
+            createdAt: now,
+            updatedAt: now,
+            spreadId: selectedType,
+            spreadName,
             question,
             context,
-            type: selectedType,
             cards,
-            interpretations: []
+            insights: [],
+            relatedReadings: [],
+            interpretations: [],
+            isPublic: false,
+            // Legacy compatibility fields
+            date: formattedDate,
+            type: selectedType,
         });
         router.push(`/reading/${readingId}`);
     };

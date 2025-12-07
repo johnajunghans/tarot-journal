@@ -5,7 +5,7 @@
  * suit, arcana type, or number. Supports number-to-word expansion
  * (e.g., "3" matches "Three of Cups").
  */
-import { Card } from "./types"
+import { TarotCard } from "./types"
 
 // === Constants ===
 
@@ -97,9 +97,9 @@ export function expandQueryTokens(search: string): string[] {
  * @returns True if all tokens match some field of the card
  */
 export function matchesCard(
-    card: Card,
+    card: TarotCard,
     queryTokens: string[],
-    formatCardName: (card: Card) => string
+    formatCardName: (card: TarotCard) => string
 ): boolean {
     if (queryTokens.length === 0) return false
 

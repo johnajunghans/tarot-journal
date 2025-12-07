@@ -5,7 +5,11 @@
  * and descriptions. Used across the application for consistent
  * spread rendering and selection.
  */
-import { ReadingType } from "./types"
+
+// === Compatibility Types ===
+
+/** Legacy spread types for fixed layouts (pre-canvas system) */
+export type ReadingType = 'three-card' | 'four-card' | 'celtic-cross';
 
 // === Position Labels ===
 

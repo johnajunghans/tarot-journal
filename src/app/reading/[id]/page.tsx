@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Reading, Interpretation } from "@/lib/types"
+import { ReadingType } from "@/lib/spread-config"
 import { getReadingById, updateReading, deleteReading } from "@/lib/storage"
 import { SpreadLayout } from "@/components/spread-layout"
 import { Button } from "@/components/ui/button"
@@ -50,19 +51,19 @@ export default function ReadingDetailPage() {
 
     const handleDownload = () => {
         const content = `
-            # Tarot Reading - ${formatDate(reading.date)}
-            Type: ${reading.type}
+            # Tarot Reading - ${formatDate(reading.date || reading.createdAt)}
+            Type: ${reading.spreadName || reading.type || reading.spreadId}
 
             ## Cards
             ${reading.cards.map(c => `- ${c.positionLabel}: ${c.cardName} (${c.orientation})`).join('\n')}
 
             ## Interpretations
             ${reading.interpretations.map(i => `
-                ### Question: ${i.question}
-                **Context:** ${i.context || 'None'}
-                **Date:** ${formatDate(i.date)}
+                ### Question: ${i.question || reading.question}
+                **Context:** ${i.context || reading.context || 'None'}
+                **Date:** ${formatDate(i.date || i.createdAt)}
 
-                ${i.aiResponse}
+                ${i.aiResponse || i.content}
             `).join('\n---\n')}
         `.trim();
 
@@ -70,7 +71,8 @@ export default function ReadingDetailPage() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `tarot-reading-${reading.date.split('T')[0]}.md`;
+        const dateStr = (reading.date || reading.createdAt).split('T')[0];
+        a.download = `tarot-reading-${dateStr}.md`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -98,13 +100,13 @@ export default function ReadingDetailPage() {
 
             <main className="container mx-auto px-4 py-8 space-y-8">
                 <div className="text-center space-y-2">
-                    <h1 className="text-3xl font-bold capitalize">{reading.type.replace('-', ' ')}</h1>
-                    <p className="text-muted-foreground">{formatDate(reading.date)}</p>
+                    <h1 className="text-3xl font-bold capitalize">{reading.spreadName || (reading.type || reading.spreadId || '').replace('-', ' ')}</h1>
+                    <p className="text-muted-foreground">{formatDate(reading.date || reading.createdAt)}</p>
                 </div>
 
                 {/* Spread Visualization */}
                 <div className="bg-secondary/20 rounded-xl p-4 md:p-8 min-h-[400px] flex items-center justify-center border">
-                    <SpreadLayout type={reading.type} cards={reading.cards} />
+                    <SpreadLayout type={(reading.type || reading.spreadId) as ReadingType} cards={reading.cards} />
                 </div>
 
                 {/* Action Bar */}

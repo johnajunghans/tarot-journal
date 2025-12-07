@@ -33,15 +33,18 @@ export function ReadingListCard({ reading }: ReadingListCardProps) {
         return new Date(dateStr).toLocaleDateString();
     };
 
+    const displayDate = reading.date || reading.createdAt;
+    const displayType = reading.spreadName || (reading.type || reading.spreadId || '').replace('-', ' ');
+
     return (
         <Link href={`/reading/${reading.id}`}>
             <Card className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
-                        <Badge variant="outline" className="capitalize">{reading.type.replace('-', ' ')}</Badge>
+                        <Badge variant="outline" className="capitalize">{displayType}</Badge>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {formatDate(reading.date)}
+                            {formatDate(displayDate)}
                         </span>
                     </div>
                     <CardTitle className="text-lg mt-2 line-clamp-1">

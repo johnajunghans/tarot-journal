@@ -32,9 +32,10 @@ export function InterpretationCard({ interpretation: interp }: InterpretationCar
             >
                 <div className="flex justify-between items-start">
                     <div className="space-y-1 flex-1">
-                        <CardTitle className="text-lg">Q: {interp.question}</CardTitle>
+                        {interp.question && <CardTitle className="text-lg">Q: {interp.question}</CardTitle>}
                         {interp.context && <p className="text-sm text-muted-foreground">Context: {interp.context}</p>}
-                        <p className="text-xs text-muted-foreground">{formatDate(interp.date)}</p>
+                        {interp.focus && <p className="text-sm text-muted-foreground italic">Focus: {interp.focus}</p>}
+                        <p className="text-xs text-muted-foreground">{formatDate(interp.date || interp.createdAt)}</p>
                     </div>
                     <Button variant="ghost" size="sm" className="ml-2 shrink-0">
                         {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -43,7 +44,7 @@ export function InterpretationCard({ interpretation: interp }: InterpretationCar
             </CardHeader>
             {isExpanded && (
                 <CardContent className="pt-6 prose dark:prose-invert max-w-none">
-                    <ReactMarkdown>{interp.aiResponse}</ReactMarkdown>
+                    <ReactMarkdown>{interp.aiResponse || interp.content}</ReactMarkdown>
                 </CardContent>
             )}
         </Card>
