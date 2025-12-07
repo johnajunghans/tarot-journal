@@ -1,3 +1,9 @@
+/**
+ * Theme Provider
+ * 
+ * Wraps the application with next-themes for dark/light mode support.
+ * This context provider should wrap the entire app in the root layout.
+ */
 "use client"
 
 import * as React from "react"
@@ -9,3 +15,4 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
     return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
+

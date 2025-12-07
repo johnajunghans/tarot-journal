@@ -7,11 +7,11 @@ import { getReadingById, updateReading, deleteReading } from "@/lib/storage"
 import { SpreadLayout } from "@/components/spread-layout"
 import { Button } from "@/components/ui/button"
 import { InterpretationDialog } from "@/components/interpretation-dialog"
+import { InterpretationCard } from "@/components/interpretation-card"
 import { ArrowLeft, Download, Trash2 } from "lucide-react"
-import ReactMarkdown from "react-markdown"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ModeToggle } from "@/components/mode-toggle"
+import { formatDate } from "@/lib/utils"
 
 export default function ReadingDetailPage() {
     const { id } = useParams()
@@ -50,21 +50,21 @@ export default function ReadingDetailPage() {
 
     const handleDownload = () => {
         const content = `
-# Tarot Reading - ${new Date(reading.date).toLocaleDateString()}
-Type: ${reading.type}
+            # Tarot Reading - ${formatDate(reading.date)}
+            Type: ${reading.type}
 
-## Cards
-${reading.cards.map(c => `- ${c.positionLabel}: ${c.cardName} (${c.orientation})`).join('\n')}
+            ## Cards
+            ${reading.cards.map(c => `- ${c.positionLabel}: ${c.cardName} (${c.orientation})`).join('\n')}
 
-## Interpretations
-${reading.interpretations.map(i => `
-### Question: ${i.question}
-**Context:** ${i.context || 'None'}
-**Date:** ${new Date(i.date).toLocaleString()}
+            ## Interpretations
+            ${reading.interpretations.map(i => `
+                ### Question: ${i.question}
+                **Context:** ${i.context || 'None'}
+                **Date:** ${formatDate(i.date)}
 
-${i.aiResponse}
-`).join('\n---\n')}
-    `.trim();
+                ${i.aiResponse}
+            `).join('\n---\n')}
+        `.trim();
 
         const blob = new Blob([content], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
@@ -99,7 +99,7 @@ ${i.aiResponse}
             <main className="container mx-auto px-4 py-8 space-y-8">
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold capitalize">{reading.type.replace('-', ' ')}</h1>
-                    <p className="text-muted-foreground">{new Date(reading.date).toLocaleDateString()} at {new Date(reading.date).toLocaleTimeString()}</p>
+                    <p className="text-muted-foreground">{formatDate(reading.date)}</p>
                 </div>
 
                 {/* Spread Visualization */}
@@ -121,16 +121,7 @@ ${i.aiResponse}
                         <p className="text-muted-foreground text-center py-8">No interpretations yet. Ask the AI for guidance above.</p>
                     ) : (
                         reading.interpretations.map((interp) => (
-                            <Card key={interp.id}>
-                                <CardHeader className="bg-muted/50">
-                                    <CardTitle className="text-lg">Q: {interp.question}</CardTitle>
-                                    {interp.context && <p className="text-sm text-muted-foreground">Context: {interp.context}</p>}
-                                    <p className="text-xs text-muted-foreground mt-2">{new Date(interp.date).toLocaleString()}</p>
-                                </CardHeader>
-                                <CardContent className="pt-6 prose dark:prose-invert max-w-none">
-                                    <ReactMarkdown>{interp.aiResponse}</ReactMarkdown>
-                                </CardContent>
-                            </Card>
+                            <InterpretationCard key={interp.id} interpretation={interp} />
                         ))
                     )}
                 </div>

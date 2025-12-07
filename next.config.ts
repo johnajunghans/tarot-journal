@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'sacred-texts.com',
+        hostname: 'steve-p.org',
       },
     ],
   },

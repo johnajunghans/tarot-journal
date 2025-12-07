@@ -1,4 +1,13 @@
+/**
+ * Tarot Card Data
+ * 
+ * Contains the complete deck of 78 tarot cards with their meanings,
+ * keywords, and image URLs. Also provides helper functions for
+ * card lookups and name formatting.
+ */
 import { Card, Suit } from './types';
+
+// === Constants ===
 
 const majorArcanaNames = [
     "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
@@ -9,30 +18,43 @@ const majorArcanaNames = [
 ];
 
 const suits: Suit[] = ['cups', 'wands', 'pentacles', 'swords'];
-const suitNames = {
+
+/** Human-readable suit names */
+const suitNames: Record<Suit, string> = {
     cups: "Cups",
     wands: "Wands",
     pentacles: "Pentacles",
     swords: "Swords"
 };
 
+// === Image URL Helpers ===
+
 const getMajorImage = (num: number) => {
     const padded = num.toString().padStart(2, '0');
-    return `https://sacred-texts.com/tarot/pkt/img/ar${padded}.jpg`;
+    return `https://steve-p.org/cards/small/sm_RWSa-T-${padded}.webp`;
 };
 
 const getMinorImage = (suit: Suit, num: number) => {
-    const suitPrefix = {
-        wands: 'wa',
-        cups: 'cu',
-        swords: 'sw',
-        pentacles: 'pe'
+    const suitCode = {
+        wands: 'W',
+        cups: 'C',
+        swords: 'S',
+        pentacles: 'P'
     }[suit];
-    const padded = num.toString().padStart(2, '0');
-    return `https://sacred-texts.com/tarot/pkt/img/${suitPrefix}${padded}.jpg`;
+
+    let rankCode = "";
+    if (num === 1) rankCode = "0A";
+    else if (num >= 2 && num <= 9) rankCode = `0${num}`;
+    else if (num === 10) rankCode = "10";
+    else if (num === 11) rankCode = "J1"; // Page
+    else if (num === 12) rankCode = "J2"; // Knight
+    else if (num === 13) rankCode = "QU"; // Queen
+    else if (num === 14) rankCode = "KI"; // King
+
+    return `https://steve-p.org/cards/small/sm_RWSa-${suitCode}-${rankCode}.webp`;
 };
 
-// Simplified meanings for prototype
+/** Generates placeholder meanings (simplified for prototype) */
 const getMeanings = (name: string, upright: boolean) => {
     // In a real app, this would be a full database. 
     // We'll return generic but thematic strings for now or brief ones.
@@ -40,6 +62,8 @@ const getMeanings = (name: string, upright: boolean) => {
         ? `The essence of ${name} brings clarity and direction.`
         : `The reversed ${name} suggests a need for internal reflection or a blockage.`;
 };
+
+// === Card Deck Generation ===
 
 export const cards: Card[] = [];
 
@@ -82,7 +106,9 @@ suits.forEach(suit => {
     }
 });
 
-// Update specific meanings for a better demo experience
+// === Demo Data Overrides ===
+
+/** Specific meaning overrides for better demo experience */
 const demoUpdates: Partial<Card>[] = [
     { id: 'major-0', uprightMeaning: "New beginnings, innocence, spontaneity.", reversedMeaning: "Recklessness, risk-taking." },
     { id: 'major-13', uprightMeaning: "Endings, change, transformation, transition.", reversedMeaning: "Resistance to change, personal transformation." },
@@ -95,3 +121,46 @@ demoUpdates.forEach(update => {
         Object.assign(card, update);
     }
 });
+
+// === Helper Functions ===
+
+/** Number-to-word mapping for minor arcana card names */
+const numberWords: Record<number, string> = {
+    1: "Ace",
+    2: "Two",
+    3: "Three",
+    4: "Four",
+    5: "Five",
+    6: "Six",
+    7: "Seven",
+    8: "Eight",
+    9: "Nine",
+    10: "Ten",
+};
+
+/**
+ * Finds a card by its unique ID.
+ * 
+ * @param id - The card ID (e.g., "major-0" or "minor-cups-1")
+ * @returns The card if found, undefined otherwise
+ */
+export function getCardById(id: string): Card | undefined {
+    return cards.find(c => c.id === id);
+}
+
+/**
+ * Formats a card name for display, converting numeric minor arcana
+ * (e.g., "2 of Cups") to word form (e.g., "Two of Cups").
+ * 
+ * @param card - The card to format
+ * @returns The formatted card name
+ */
+export function formatCardName(card: Card): string {
+    if (card.arcana === 'minor' && card.suit && card.number && card.number >= 2 && card.number <= 10) {
+        const word = numberWords[card.number] ?? card.number.toString();
+        const suitName = suitNames[card.suit] ?? card.suit;
+        return `${word} of ${suitName}`;
+    }
+    return card.name;
+}
+

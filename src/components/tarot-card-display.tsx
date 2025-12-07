@@ -1,14 +1,22 @@
+/**
+ * Tarot Card Display
+ * 
+ * Renders a tarot card image with optional rotation for reversed cards.
+ * Includes a popover with card details on click.
+ */
 "use client"
 
 import Image from "next/image"
 import { ReadingCard } from "@/lib/types"
-import { cards } from "@/lib/tarot-data"
+import { getCardById } from "@/lib/tarot-data"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+
+// === Types ===
 
 interface TarotCardDisplayProps {
     cardData: ReadingCard
@@ -17,8 +25,10 @@ interface TarotCardDisplayProps {
     className?: string
 }
 
+// === Component ===
+
 export function TarotCardDisplay({ cardData, width = 120, height = 200, className }: TarotCardDisplayProps) {
-    const fullCardInfo = cards.find(c => c.id === cardData.cardId);
+    const fullCardInfo = getCardById(cardData.cardId);
 
     if (!fullCardInfo) return null;
 
@@ -59,9 +69,9 @@ export function TarotCardDisplay({ cardData, width = 120, height = 200, classNam
                     </div>
                 </PopoverContent>
             </Popover>
-            <div className="text-center text-xs font-semibold text-muted-foreground w-full max-w-[120px]">
+            {/* <div className="text-center text-xs font-semibold text-muted-foreground w-full max-w-[120px]">
                 {cardData.positionLabel}
-            </div>
+            </div> */}
         </div>
     )
 }

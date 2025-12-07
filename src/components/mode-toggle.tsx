@@ -1,3 +1,9 @@
+/**
+ * Mode Toggle
+ * 
+ * A dropdown button for switching between light, dark, and system themes.
+ * Uses next-themes for theme management.
+ */
 "use client"
 
 import * as React from "react"
@@ -11,6 +17,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+// === Component ===
 
 export function ModeToggle() {
     const { setTheme } = useTheme()

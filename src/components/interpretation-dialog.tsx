@@ -1,3 +1,9 @@
+/**
+ * Interpretation Dialog
+ * 
+ * A dialog component for requesting AI-generated tarot interpretations.
+ * Uses the question and context from the reading to generate insights.
+ */
 "use client"
 
 import * as React from "react"
@@ -14,11 +20,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Reading, Interpretation } from "@/lib/types"
 import { Loader2, Sparkles } from "lucide-react"
-import { cards } from "@/lib/tarot-data"
+import { getCardById } from "@/lib/tarot-data"
+
+// === Types ===
 
 interface InterpretationDialogProps {
     reading: Reading
@@ -27,25 +33,24 @@ interface InterpretationDialogProps {
 
 export function InterpretationDialog({ reading, onSave }: InterpretationDialogProps) {
     const [open, setOpen] = React.useState(false)
-    const [question, setQuestion] = React.useState("")
-    const [context, setContext] = React.useState("")
+    
     const [apiKey, setApiKey] = React.useState("")
     const [loading, setLoading] = React.useState(false)
     const [result, setResult] = React.useState<string | null>(null)
     const [error, setError] = React.useState<string | null>(null)
 
     const handleGenerate = async () => {
-        if (!question) return;
+        if (!reading.question) return;
         setLoading(true);
         setError(null);
         setResult(null);
 
         try {
-            // Construct Prompt
+            // Construct prompt with card details
             const cardListText = reading.cards
                 .sort((a, b) => a.position - b.position)
                 .map(c => {
-                    const fullInfo = cards.find(info => info.id === c.cardId);
+                    const fullInfo = getCardById(c.cardId);
                     return `${c.position}. ${c.positionLabel}: ${c.cardName} (${c.orientation === 'reversed' ? 'Reversed' : 'Upright'}) - ${fullInfo?.uprightMeaning || ''}`;
                 })
                 .join('\n');
@@ -53,8 +58,8 @@ export function InterpretationDialog({ reading, onSave }: InterpretationDialogPr
             const systemPrompt = `You are an experienced and insightful tarot reader. Return your interpretation in well-formatted markdown.`;
             const userPrompt = `
 Reading Type: ${reading.type}
-Question: ${question}
-Context: ${context}
+Question: ${reading.question}
+Context: ${reading.context || 'None provided'}
 
 Cards:
 ${cardListText}
@@ -85,8 +90,8 @@ Please provide your interpretation.
         const interp: Interpretation = {
             id: crypto.randomUUID(),
             date: new Date().toISOString(),
-            question,
-            context,
+            question: reading.question,
+            context: reading.context,
             aiResponse: result,
             model: 'claude-3-sonnet' // or whatever
         };
@@ -106,30 +111,24 @@ Please provide your interpretation.
                 <DialogHeader>
                     <DialogTitle>Ask the Tarot</DialogTitle>
                     <DialogDescription>
-                        Provide your question and context for a deeper reading.
+                        Generate an interpretation for your reading.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="flex-1 overflow-y-auto pr-2 space-y-4 py-4">
                     {!result ? (
                         <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>Your Question</Label>
-                                <Input
-                                    placeholder="What should I focus on?"
-                                    value={question}
-                                    onChange={e => setQuestion(e.target.value)}
-                                />
+                            <div className="p-4 bg-muted/50 rounded-lg space-y-2">
+                                <div className="font-medium">Question:</div>
+                                <div className="text-sm text-muted-foreground">{reading.question}</div>
+                                {reading.context && (
+                                    <>
+                                        <div className="font-medium mt-2">Context:</div>
+                                        <div className="text-sm text-muted-foreground">{reading.context}</div>
+                                    </>
+                                )}
                             </div>
-                            <div className="space-y-2">
-                                <Label>Context (Optional)</Label>
-                                <Textarea
-                                    placeholder="Additional background..."
-                                    value={context}
-                                    onChange={e => setContext(e.target.value)}
-                                    className="h-24"
-                                />
-                            </div>
+
                             <div className="space-y-2">
                                 <Label className="text-xs text-muted-foreground">OpenRouter API Key (Optional if env set)</Label>
                                 <Input
@@ -155,13 +154,13 @@ Please provide your interpretation.
 
                 <DialogFooter className="gap-2 sm:gap-0">
                     {!result ? (
-                        <Button onClick={handleGenerate} disabled={loading || !question} className="w-full sm:w-auto">
+                        <Button onClick={handleGenerate} disabled={loading || !reading.question} className="w-full sm:w-auto">
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Generate
                         </Button>
                     ) : (
                         <>
-                            <Button variant="outline" onClick={() => setResult(null)}>Refine Question</Button>
+                            <Button variant="outline" onClick={() => setResult(null)}>Retry</Button>
                             <Button onClick={handleSave}>Save Interpretation</Button>
                         </>
                     )}
