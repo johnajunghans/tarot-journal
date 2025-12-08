@@ -9,9 +9,8 @@ import { SpreadLayout } from "@/components/spread-layout"
 import { Button } from "@/components/ui/button"
 import { InterpretationDialog } from "@/components/interpretation-dialog"
 import { InterpretationCard } from "@/components/interpretation-card"
-import { ArrowLeft, Download, Trash2 } from "lucide-react"
+import { Download, Trash2 } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { ModeToggle } from "@/components/mode-toggle"
 import { formatDate } from "@/lib/utils"
 
 export default function ReadingDetailPage() {
@@ -45,7 +44,7 @@ export default function ReadingDetailPage() {
     const handleDelete = () => {
         if (confirm("Are you sure you want to delete this reading?")) {
             deleteReading(reading.id);
-            router.push('/');
+            router.push('/readings');
         }
     };
 
@@ -81,13 +80,13 @@ export default function ReadingDetailPage() {
 
     return (
         <div className="min-h-screen bg-background pb-20">
-            <header className="border-b sticky top-0 bg-background/95 backdrop-blur z-20">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Button variant="ghost" onClick={() => router.push('/')}>
-                        <ArrowLeft className="mr-2 w-4 h-4" /> Home
-                    </Button>
+            <main className="container mx-auto px-4 py-8 space-y-8">
+                <div className="flex items-center justify-between">
+                    <div className="text-center flex-1 space-y-2">
+                        <h1 className="text-3xl font-bold capitalize">{reading.spreadName || (reading.type || reading.spreadId || '').replace('-', ' ')}</h1>
+                        <p className="text-muted-foreground">{formatDate(reading.date || reading.createdAt)}</p>
+                    </div>
                     <div className="flex items-center gap-2">
-                        <ModeToggle />
                         <Button variant="outline" size="sm" onClick={handleDownload} title="Download Markdown">
                             <Download className="w-4 h-4" />
                         </Button>
@@ -95,13 +94,6 @@ export default function ReadingDetailPage() {
                             <Trash2 className="w-4 h-4" />
                         </Button>
                     </div>
-                </div>
-            </header>
-
-            <main className="container mx-auto px-4 py-8 space-y-8">
-                <div className="text-center space-y-2">
-                    <h1 className="text-3xl font-bold capitalize">{reading.spreadName || (reading.type || reading.spreadId || '').replace('-', ' ')}</h1>
-                    <p className="text-muted-foreground">{formatDate(reading.date || reading.createdAt)}</p>
                 </div>
 
                 {/* Spread Visualization */}

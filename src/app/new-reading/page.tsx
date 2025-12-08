@@ -21,7 +21,7 @@ import { ReadingCard, TarotCard, Orientation } from "@/lib/types"
 import { ReadingType } from "@/lib/spread-config"
 import { SPREADS, getPositionLabel, getPositionDescription } from "@/lib/spread-config"
 import { saveReading } from "@/lib/storage"
-import { ArrowLeft, CheckCircle2, Calendar as CalendarIcon } from "lucide-react"
+import { CheckCircle2, Calendar as CalendarIcon } from "lucide-react"
 import { SpreadLayout } from "@/components/spread-layout"
 import { CardPicker } from "@/components/card-picker"
 import { Separator } from "@/components/ui/separator"
@@ -138,12 +138,6 @@ export default function NewReadingPage() {
     return (
         <div className="min-h-screen bg-background p-4 md:p-8">
             <div className="max-w-4xl mx-auto space-y-8">
-                <div className="flex items-center justify-between">
-                    <Button variant="ghost" onClick={() => router.back()}>
-                        <ArrowLeft className="mr-2 w-4 h-4" /> Back
-                    </Button>
-                </div>
-
                 <div className="space-y-8">
                     <div className="space-y-6">
                         <h1 className="text-3xl font-bold">New Reading</h1>
