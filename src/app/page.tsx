@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ReadingListCard } from "@/components/reading-card"
 import { getReadings } from "@/lib/storage"
 import { Reading } from "@/lib/types"
-import { Plus } from "lucide-react"
+import { Plus, Vault } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
 import SpreadCreationCanvas from "@/components/canvas/spread-creation-canvas"
 
@@ -31,9 +31,13 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            Tarot Journal
-          </h1>
+          <div className="flex gap-2 items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-2">
+              Tarot
+              <Vault className="inline w-6 h-6 stroke-white" />
+              Vault
+            </h1>
+          </div>
           <div className="flex items-center gap-4">
             <ModeToggle />
             <Button asChild className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition-opacity text-white">

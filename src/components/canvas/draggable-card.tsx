@@ -6,18 +6,6 @@ import { SpreadPosition } from '@/lib/types'
 // Register GSAP Draggable plugin
 gsap.registerPlugin(Draggable)
 
-// === Constants ===
-
-// Card dimensions (must match the SVG rect)
-const CARD_WIDTH = 90
-const CARD_HEIGHT = 150
-const STROKE_WIDTH = 2
-const TOTAL_WIDTH = CARD_WIDTH + STROKE_WIDTH
-const TOTAL_HEIGHT = CARD_HEIGHT + STROKE_WIDTH
-
-// Grid snap increment
-const GRID_SIZE = 30
-
 // === Types ===
 
 interface DraggableCardProps {
@@ -26,6 +14,10 @@ interface DraggableCardProps {
     onDragStart: (id: string) => void;
     onDragEnd: (id: string) => void;
     onSnapPreview?: (id: string, x: number | null, y: number | null) => void;
+    cardWidth: number;
+    cardHeight: number;
+    strokeWidth: number;
+    gridSize: number;
 }
 
 // === Helper Functions ===
@@ -33,13 +25,23 @@ interface DraggableCardProps {
 /**
  * Calculate snapped position based on grid size
  */
-function snapToGrid(value: number): number {
-    return Math.round(value / GRID_SIZE) * GRID_SIZE + 1.5
+function snapToGrid(value: number, gridSize: number, snapOffset: number): number {
+    return Math.round(value / gridSize) * gridSize + snapOffset
 }
 
 // === Component ===
 
-function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onSnapPreview }: DraggableCardProps) {
+function DraggableCard({
+    position,
+    onPositionChange,
+    onDragStart,
+    onDragEnd,
+    onSnapPreview,
+    cardWidth,
+    cardHeight,
+    strokeWidth,
+    gridSize
+}: DraggableCardProps) {
 
     console.log(`🎨 [${position.title}] Component rendered with position:`, { x: position.x, y: position.y })
 
@@ -60,6 +62,8 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
             return
         }
 
+        const snapOffset = (1 + (strokeWidth - 1) / 2 )
+
         // Set initial position BEFORE creating draggable
         console.log(`   📍 [${position.title}] Setting initial position:`, { x: position.x, y: position.y })
         gsap.set(card, { x: position.x, y: position.y })
@@ -70,12 +74,12 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
             // === Snap to Grid Configuration ===
             liveSnap: {
                 x: (value) => {
-                    const snapped = snapToGrid(value)
+                    const snapped = snapToGrid(value, gridSize, snapOffset)
                     console.log(`📍 [${position.title}] Snap X: ${value.toFixed(1)} → ${snapped}`)
                     return snapped
                 },
                 y: (value) => {
-                    const snapped = snapToGrid(value)
+                    const snapped = snapToGrid(value, gridSize, snapOffset)
                     console.log(`📍 [${position.title}] Snap Y: ${value.toFixed(1)} → ${snapped}`)
                     return snapped
                 },
@@ -96,16 +100,16 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
                     gsap.to(rectRef.current, { attr: { rx: 0 }, duration: 0.2 })
                 }
                 // Show snap preview
-                const snapX = snapToGrid(this.x)
-                const snapY = snapToGrid(this.y)
+                const snapX = snapToGrid(this.x, gridSize, snapOffset)
+                const snapY = snapToGrid(this.y, gridSize, snapOffset)
                 onSnapPreview?.(position.id, snapX, snapY)
             },
 
             onDrag: function() {
                 console.log(`🔵 [${position.title}] DRAGGING to:`, { x: this.x, y: this.y })
                 // Calculate where the card will snap to
-                const snapX = snapToGrid(this.x)
-                const snapY = snapToGrid(this.y)
+                const snapX = snapToGrid(this.x, gridSize, snapOffset)
+                const snapY = snapToGrid(this.y, gridSize, snapOffset)
                 // Update snap preview lines
                 onSnapPreview?.(position.id, snapX, snapY)
             },
@@ -141,7 +145,7 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
                 draggableInstance.current.kill()
             }
         }
-    }, [position.id, onPositionChange, onDragStart, onDragEnd, onSnapPreview])
+    }, [position.id, onPositionChange, onDragStart, onDragEnd, onSnapPreview, cardWidth, cardHeight, strokeWidth, gridSize])
 
     // === Effect: Sync position from props (only when NOT dragging) ===
     useEffect(() => {
@@ -164,14 +168,15 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
     // === Render ===
     return (
         <g ref={cardRef} style={{ cursor: "grab" }}>
+
             {/* Card background */}
-            <rect 
+            <rect
                 ref={rectRef}
-                width={CARD_WIDTH - 1 * STROKE_WIDTH - 0.5} 
-                height={CARD_HEIGHT - 1 * STROKE_WIDTH - 0.5}  
-                fill="white"
-                stroke="black"
-                strokeWidth={STROKE_WIDTH}
+                width={cardWidth - 1 * strokeWidth - 0.5}
+                height={cardHeight - 1 * strokeWidth - 0.5}
+                className='fill-secondary/50 stroke-border'
+                // strokeDasharray={3}
+                strokeWidth={strokeWidth}
                 rx={8}  // Rounded corners (animated via GSAP on drag)
             />
 
@@ -181,7 +186,7 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
                 x={15} 
                 y={20} 
                 textAnchor="middle" 
-                fill="white" 
+                className='fill-foreground' 
                 fontSize={12}
                 fontWeight="bold"
                 style={{ pointerEvents: 'none' }}
@@ -196,6 +201,7 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
                 textAnchor="middle" 
                 fontSize={14}
                 fontWeight="500"
+                className='fill-foreground' 
                 style={{ pointerEvents: 'none' }}
             >
                 {position.title}
@@ -215,12 +221,17 @@ function DraggableCard({ position, onPositionChange, onDragStart, onDragEnd, onS
  */
 function arePropsEqual(prevProps: DraggableCardProps, nextProps: DraggableCardProps): boolean {
     const positionUnchanged = prevProps.position === nextProps.position
-    const callbacksUnchanged = 
+    const callbacksUnchanged =
         prevProps.onPositionChange === nextProps.onPositionChange &&
         prevProps.onDragStart === nextProps.onDragStart &&
         prevProps.onDragEnd === nextProps.onDragEnd
-    
-    const shouldSkipRender = positionUnchanged && callbacksUnchanged
+    const dimensionsUnchanged =
+        prevProps.cardWidth === nextProps.cardWidth &&
+        prevProps.cardHeight === nextProps.cardHeight &&
+        prevProps.strokeWidth === nextProps.strokeWidth &&
+        prevProps.gridSize === nextProps.gridSize
+
+    const shouldSkipRender = positionUnchanged && callbacksUnchanged && dimensionsUnchanged
     
     if (shouldSkipRender) {
         console.log(`🚫 [${prevProps.position.title}] Memo: Skipping re-render (props unchanged)`)
@@ -232,6 +243,9 @@ function arePropsEqual(prevProps: DraggableCardProps, nextProps: DraggableCardPr
         if (!callbacksUnchanged) {
             console.log(`   ↳ Callbacks changed (this shouldn't happen!)`)
         }
+        if (!dimensionsUnchanged) {
+            console.log(`   ↳ Dimensions changed`)
+        }
     }
     
     return shouldSkipRender
@@ -241,8 +255,3 @@ function arePropsEqual(prevProps: DraggableCardProps, nextProps: DraggableCardPr
  * Export memoized version to prevent unnecessary re-renders when sibling cards update.
  */
 export default memo(DraggableCard, arePropsEqual)
-
-/**
- * Export card dimensions for use in parent components (e.g., for snap guide rendering)
- */
-export { CARD_WIDTH, CARD_HEIGHT, STROKE_WIDTH, TOTAL_WIDTH, TOTAL_HEIGHT }

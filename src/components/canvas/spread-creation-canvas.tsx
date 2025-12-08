@@ -8,7 +8,19 @@
 import { SpreadPosition, ViewBox } from "@/lib/types"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
-import DraggableCard, { CARD_WIDTH, CARD_HEIGHT, STROKE_WIDTH } from "./draggable-card"
+import DraggableCard from "./draggable-card"
+
+// === Constants ===
+
+// Card dimensions (must match the SVG rect)
+const CARD_WIDTH = 90
+const CARD_HEIGHT = 150
+const STROKE_WIDTH = 1.5
+// const TOTAL_WIDTH = CARD_WIDTH + STROKE_WIDTH
+// const TOTAL_HEIGHT = CARD_HEIGHT + STROKE_WIDTH
+
+// Grid snap increment
+const GRID_SIZE = 30
 
 // === Component ===
 
@@ -86,8 +98,10 @@ export default function SpreadCreationCanvas() {
         const animateLineColor = (line: SVGLineElement | null, isAligned: boolean) => {
             if (!line) return
             const targetColor = isAligned ? '#ef4444' : '#3b82f6' // red : blue
+            const strokeWidth = isAligned ? 2 : 1
             gsap.to(line, {
                 stroke: targetColor,
+                strokeWidth,
                 duration: 0.2,
                 ease: "power2.out"
             })
@@ -259,7 +273,7 @@ export default function SpreadCreationCanvas() {
 
     // === Render ===
     return (
-        <div className="w-full h-full border rounded-lg overflow-hidden bg-gray-50">
+        <div className="w-full h-full border rounded-lg overflow-hidden bg-secondary/20">
             <svg
                 ref={svgRef} 
                 viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`}
@@ -271,8 +285,7 @@ export default function SpreadCreationCanvas() {
                     <pattern id="grid" width={30} height={30} patternUnits="userSpaceOnUse">
                         <path 
                             d="M 30 0 L 0 0 0 30" 
-                            fill="none" 
-                            stroke="#e5e7eb" 
+                            className="fill-none stroke-border/50"
                             strokeWidth={1} 
                         />
                     </pattern>
@@ -330,13 +343,17 @@ export default function SpreadCreationCanvas() {
 
                 {/* Render all draggable card positions */}
                 {positions.map(position => (
-                    <DraggableCard 
+                    <DraggableCard
                         key={position.id}
                         position={position}
                         onPositionChange={handleChangePosition}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onSnapPreview={handleSnapPreview}
+                        cardWidth={CARD_WIDTH}
+                        cardHeight={CARD_HEIGHT}
+                        strokeWidth={STROKE_WIDTH}
+                        gridSize={GRID_SIZE}
                     />
                 ))}
             </svg>
