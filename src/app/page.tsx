@@ -8,6 +8,7 @@ import { getReadings } from "@/lib/storage"
 import { Reading } from "@/lib/types"
 import { Plus } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
+import SpreadCreationCanvas from "@/components/canvas/spread-creation-canvas"
 
 export default function Home() {
   const [readings, setReadings] = useState<Reading[]>([])
@@ -45,7 +46,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {readings.length === 0 ? (
+        {/* {readings.length === 0 ? (
           <div className="text-center py-20">
             <h2 className="text-xl font-semibold mb-2">No readings yet</h2>
             <p className="text-muted-foreground mb-8">Start your journey by recording your first reading.</p>
@@ -59,7 +60,10 @@ export default function Home() {
               <ReadingListCard key={reading.id} reading={reading} />
             ))}
           </div>
-        )}
+        )} */}
+
+        {/* Temporary just to test */}
+        <SpreadCreationCanvas />
       </main>
     </div>
   )
