@@ -79,7 +79,7 @@ export default function ReadingDetailPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background pb-20">
+        <div className="bg-background pb-20">
             <main className="container mx-auto px-4 py-8 space-y-8">
                 <div className="flex items-center justify-between">
                     <div className="text-center flex-1 space-y-2">

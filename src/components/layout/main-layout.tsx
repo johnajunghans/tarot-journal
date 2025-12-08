@@ -13,11 +13,9 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider defaultOpen={true}>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="overflow-auto max-h-screen ml-0! md:max-h-[calc(100vh-1rem)]">
         <AppHeader />
-        <main className="flex-1 overflow-auto">
           {children}
-        </main>
       </SidebarInset>
     </SidebarProvider>
   )

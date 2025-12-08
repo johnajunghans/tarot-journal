@@ -57,7 +57,7 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed"
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
           <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600">
@@ -92,6 +92,7 @@ export function AppSidebar() {
                       asChild 
                       isActive={isActive}
                       tooltip={item.title}
+                      size="lg"
                     >
                       <Link href={item.href} className="flex items-center">
                         <Icon className="size-4 shrink-0" />

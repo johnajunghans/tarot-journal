@@ -20,7 +20,7 @@ const STROKE_WIDTH = 1.5
 // const TOTAL_HEIGHT = CARD_HEIGHT + STROKE_WIDTH
 
 // Grid snap increment
-const GRID_SIZE = 30
+const GRID_SIZE = 15
 
 // === Component ===
 
@@ -282,9 +282,9 @@ export default function SpreadCreationCanvas() {
             >
                 {/* Grid pattern for visual reference */}
                 <defs>
-                    <pattern id="grid" width={30} height={30} patternUnits="userSpaceOnUse">
+                    <pattern id="grid" width={GRID_SIZE} height={GRID_SIZE} patternUnits="userSpaceOnUse">
                         <path 
-                            d="M 30 0 L 0 0 0 30" 
+                            d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
                             className="fill-none stroke-border/50"
                             strokeWidth={1} 
                         />
