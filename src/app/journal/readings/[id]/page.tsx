@@ -44,7 +44,7 @@ export default function ReadingDetailPage() {
     const handleDelete = () => {
         if (confirm("Are you sure you want to delete this reading?")) {
             deleteReading(reading.id);
-            router.push('/readings');
+            router.push('/journal/readings');
         }
     };
 
@@ -123,3 +123,4 @@ export default function ReadingDetailPage() {
         </div>
     )
 }
+

@@ -1,32 +1,79 @@
 /**
  * App Header
  * 
- * Main application header with sidebar toggle, theme toggle, and new reading button.
+ * Abstracted application header with sidebar toggle, breadcrumbs, and optional action button.
  */
 "use client"
 
-import Link from "next/link"
-import { Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Fragment } from "react/jsx-runtime"
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
-export function AppHeader() {
+// === Types ===
+
+interface BreadcrumbSegment {
+  label: string
+  href?: string
+}
+
+interface AppHeaderProps {
+  breadcrumbs?: BreadcrumbSegment[]
+  actionButton?: React.ReactNode
+}
+
+// === Component ===
+
+export function AppHeader({ breadcrumbs = [], actionButton }: AppHeaderProps) {
+
+  const { state } = useSidebar()
+
   return (
     <header className="border-b bg-background/75 backdrop-blur-[3px] sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <SidebarTrigger />
+            
+          
+          
+          {breadcrumbs.length > 0 && (
+            <Breadcrumb>
+              <BreadcrumbList>
+                {breadcrumbs.map((crumb, index) => {
+                  const isLast = index === breadcrumbs.length - 1
+                  
+                  return (
+                    <Fragment key={`${crumb.label}-${index}`}>
+                      <BreadcrumbItem>
+                        {isLast ? (
+                          <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                        ) : crumb.href ? (
+                          <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
+                        ) : (
+                          <span>{crumb.label}</span>
+                        )}
+                      </BreadcrumbItem>
+                      {!isLast && <BreadcrumbSeparator />}
+                    </Fragment>
+                  )
+                })}
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
         </div>
         
-        <div className="flex items-center gap-4">
-          <ModeToggle />
-          <Button asChild className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition-opacity text-white">
-            <Link href="/new-reading">
-              <Plus className="w-4 h-4" /> New Reading
-            </Link>
-          </Button>
-        </div>
+        {actionButton && (
+          <div className="flex items-center gap-4">
+            {actionButton}
+          </div>
+        )}
       </div>
     </header>
   )

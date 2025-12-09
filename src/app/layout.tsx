@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Philosopher, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
-import { MainLayout } from "@/components/layout/main-layout";
 
 const philosopher = Philosopher({
   variable: "--font-philosopher",
@@ -28,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${philosopher.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${philosopher.variable} ${geistMono.variable} font-sans bg-sidebar antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -36,9 +35,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MainLayout>
-            {children}
-          </MainLayout>
+          {children}
         </ThemeProvider>
       </body>
     </html>

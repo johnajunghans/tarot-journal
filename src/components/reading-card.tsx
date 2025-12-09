@@ -37,7 +37,7 @@ export function ReadingListCard({ reading }: ReadingListCardProps) {
     const displayType = reading.spreadName || (reading.type || reading.spreadId || '').replace('-', ' ');
 
     return (
-        <Link href={`/reading/${reading.id}`}>
+        <Link href={`/journal/readings/${reading.id}`}>
             <Card className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">

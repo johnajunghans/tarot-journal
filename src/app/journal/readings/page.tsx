@@ -37,7 +37,7 @@ export default function ReadingsPage() {
             <h2 className="text-xl font-semibold mb-2">No readings yet</h2>
             <p className="text-muted-foreground mb-8">Start your journey by recording your first reading.</p>
             <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
-              <Link href="/new-reading">Start Reading</Link>
+              <Link href="/journal/readings/new">Start Reading</Link>
             </Button>
           </div>
         ) : (

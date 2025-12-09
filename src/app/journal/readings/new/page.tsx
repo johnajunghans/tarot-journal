@@ -107,7 +107,7 @@ export default function NewReadingPage() {
             date: formattedDate,
             type: selectedType,
         });
-        router.push(`/reading/${readingId}`);
+        router.push(`/journal/readings/${readingId}`);
     };
 
     // === Render Helpers ===
@@ -283,3 +283,4 @@ export default function NewReadingPage() {
         </div>
     )
 }
+

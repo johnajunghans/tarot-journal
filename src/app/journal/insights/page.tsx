@@ -1,20 +1,20 @@
 /**
- * Interpretations Page
+ * Insights Page
  * 
- * View and manage reading interpretations.
+ * View and manage insights derived from readings.
  */
 "use client"
 
 import { Sparkles } from "lucide-react"
 
-export default function InterpretationsPage() {
+export default function InsightsPage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Interpretations</h1>
+          <h1 className="text-3xl font-bold mb-2">Insights</h1>
           <p className="text-muted-foreground">
-            View and manage your reading interpretations
+            View and manage insights derived from your readings
           </p>
         </div>
         
@@ -24,7 +24,7 @@ export default function InterpretationsPage() {
           </div>
           <h2 className="text-xl font-semibold mb-2">Coming Soon</h2>
           <p className="text-muted-foreground text-center max-w-md">
-            This feature is under development. Soon you'll be able to view all your interpretations in one place.
+            This feature is under development. Soon you'll be able to view all your insights in one place.
           </p>
         </div>
       </main>
