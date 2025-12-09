@@ -8,8 +8,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useTheme } from "next-themes"
-import { BookOpen, LayoutGrid, Sparkles, Vault, Notebook } from "lucide-react"
+import { BookOpen, GalleryHorizontalEnd, Lightbulb, Vault, Notebook } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -36,8 +35,8 @@ const journalNav = {
   icon: Notebook,
   children: [
     { title: "Readings", href: "/journal/readings", icon: BookOpen },
-    { title: "Spreads", href: "/journal/spreads", icon: LayoutGrid },
-    { title: "Insights", href: "/journal/insights", icon: Sparkles },
+    { title: "Spreads", href: "/journal/spreads", icon: GalleryHorizontalEnd },
+    { title: "Insights", href: "/journal/insights", icon: Lightbulb },
   ],
 }
 

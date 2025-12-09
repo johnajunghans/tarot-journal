@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Philosopher, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 const philosopher = Philosopher({
   variable: "--font-philosopher",
@@ -35,7 +37,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SidebarProvider defaultOpen={false}>
+            <AppSidebar />
+            <SidebarInset className="overflow-auto max-h-screen ml-0! md:max-h-[calc(100vh-1rem)]">
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

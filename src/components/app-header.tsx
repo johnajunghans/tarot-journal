@@ -5,7 +5,9 @@
  */
 "use client"
 
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
+import Link from "next/link"
+import { Fragment } from "react/jsx-runtime"
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,8 +16,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Fragment } from "react/jsx-runtime"
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 // === Types ===
 
@@ -32,17 +33,11 @@ interface AppHeaderProps {
 // === Component ===
 
 export function AppHeader({ breadcrumbs = [], actionButton }: AppHeaderProps) {
-
-  const { state } = useSidebar()
-
   return (
     <header className="border-b bg-background/75 backdrop-blur-[3px] sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <SidebarTrigger />
-            
-          
-          
           {breadcrumbs.length > 0 && (
             <Breadcrumb>
               <BreadcrumbList>
@@ -55,7 +50,9 @@ export function AppHeader({ breadcrumbs = [], actionButton }: AppHeaderProps) {
                         {isLast ? (
                           <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                         ) : crumb.href ? (
-                          <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
+                          <BreadcrumbLink asChild>
+                            <Link href={crumb.href}>{crumb.label}</Link>
+                          </BreadcrumbLink>
                         ) : (
                           <span>{crumb.label}</span>
                         )}

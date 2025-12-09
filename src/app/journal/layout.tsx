@@ -6,12 +6,8 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { Plus } from "lucide-react"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
-import { Button } from "@/components/ui/button"
+import { NewJournalActionButton } from "@/components/new-journal-action-button"
 
 // === Helpers ===
 
@@ -59,38 +55,8 @@ function getActionButton(pathname: string): React.ReactNode | null {
     return null
   }
   
-  // Determine which action to show based on current section
-  if (pathname.startsWith('/journal/readings')) {
-    return (
-      <Button asChild className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition-opacity text-white">
-        <Link href="/journal/readings/new">
-          <Plus className="w-4 h-4" /> New Reading
-        </Link>
-      </Button>
-    )
-  }
-  
-  if (pathname.startsWith('/journal/spreads')) {
-    return (
-      <Button asChild className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition-opacity text-white">
-        <Link href="/journal/spreads/new">
-          <Plus className="w-4 h-4" /> New Spread
-        </Link>
-      </Button>
-    )
-  }
-  
-  if (pathname.startsWith('/journal/insights')) {
-    return (
-      <Button asChild className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition-opacity text-white">
-        <Link href="/journal/insights/new">
-          <Plus className="w-4 h-4" /> New Insight
-        </Link>
-      </Button>
-    )
-  }
-  
-  return null
+  // Show dropdown button on all journal pages except "new" pages
+  return <NewJournalActionButton />
 }
 
 // === Component ===
@@ -101,13 +67,10 @@ export default function JournalLayout({ children }: { children: React.ReactNode 
   const actionButton = getActionButton(pathname)
   
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="overflow-auto max-h-screen ml-0! md:max-h-[calc(100vh-1rem)]">
-        <AppHeader breadcrumbs={breadcrumbs} actionButton={actionButton} />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <>
+      <AppHeader breadcrumbs={breadcrumbs} actionButton={actionButton} />
+      {children}
+    </>
   )
 }
 

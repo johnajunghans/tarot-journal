@@ -8,7 +8,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, LayoutGrid, Sparkles } from "lucide-react"
+import { BookOpen, GalleryHorizontalEnd, Lightbulb } from "lucide-react"
 
 const tiles = [
   {
@@ -22,14 +22,14 @@ const tiles = [
     title: "Spreads",
     description: "Design and manage custom spreads to use in your readings.",
     href: "/journal/spreads",
-    icon: LayoutGrid,
+    icon: GalleryHorizontalEnd,
     cta: "Manage spreads",
   },
   {
     title: "Insights",
     description: "Explore insights derived from your readings across time.",
     href: "/journal/insights",
-    icon: Sparkles,
+    icon: Lightbulb,
     cta: "View insights",
   },
 ]
