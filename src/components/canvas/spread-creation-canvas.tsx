@@ -6,7 +6,7 @@
 "use client"
 
 import { SpreadPosition, ViewBox } from "@/lib/types"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import DraggableCard from "./draggable-card"
 
@@ -22,9 +22,19 @@ const STROKE_WIDTH = 1.5
 // Grid snap increment
 const GRID_SIZE = 15
 
+// === Types ===
+
+interface SpreadCreationCanvasProps {
+    positions: SpreadPosition[]
+    setPositions: Dispatch<SetStateAction<SpreadPosition[]>>
+}
+
 // === Component ===
 
-export default function SpreadCreationCanvas() {
+export default function SpreadCreationCanvas({ 
+    positions, 
+    setPositions 
+}: SpreadCreationCanvasProps) {
 
     console.log("canvas rendered")
 
@@ -40,13 +50,6 @@ export default function SpreadCreationCanvas() {
     })
     // Ref to always have the latest positions (prevents stale closure in callbacks)
     const positionsRef = useRef<SpreadPosition[]>([])
-
-    // === State ===
-    const [positions, setPositions] = useState<SpreadPosition[]>([
-        { id: '1', position: 1, title: 'Past', x: 200, y: 300, rotation: 0, zIndex: 0, description: '' },
-        { id: '2', position: 2, title: 'Present', x: 500, y: 300, rotation: 0, zIndex: 1, description: '' },
-        { id: '3', position: 3, title: 'Future', x: 800, y: 300, rotation: 0, zIndex: 2, description: '' },
-    ])
 
     const [viewBox, setViewBox] = useState<ViewBox>({ 
         x: 0, y: 0, width: 1200, height: 800 
@@ -285,7 +288,7 @@ export default function SpreadCreationCanvas() {
                     <pattern id="grid" width={GRID_SIZE} height={GRID_SIZE} patternUnits="userSpaceOnUse">
                         <path 
                             d={`M ${GRID_SIZE} 0 L 0 0 0 ${GRID_SIZE}`}
-                            className="fill-none stroke-border/50"
+                            className="fill-none stroke-border"
                             strokeWidth={1} 
                         />
                     </pattern>
